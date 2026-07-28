@@ -21,6 +21,14 @@ FALLBACK_ITEM = {
 
 def test_format_item_primary_source():
     text = format_item(PRIMARY_ITEM)
+    # Exact output match to catch regressions in formatting, field order, or whitespace
+    assert text == (
+        "🔹 Arvid Kahl — How I Grew Without Ads\n\n"
+        "Автор рассказывает про рост без рекламы.\n\n"
+        "💡 Практический вывод: Публикуйте прогресс открыто каждую неделю.\n\n"
+        "🔗 https://example.com/post"
+    )
+    # Substring assertions as additional safeguard
     assert "Arvid Kahl" in text
     assert "How I Grew Without Ads" in text
     assert "Автор рассказывает про рост без рекламы." in text
@@ -31,6 +39,14 @@ def test_format_item_primary_source():
 
 def test_format_item_fallback_source_marks_it():
     text = format_item(FALLBACK_ITEM)
+    # Exact output match to catch regressions in fallback marker placement and formatting
+    assert text == (
+        "🔹 Marc Lou (резервный источник) — 0 to $10k MRR with no budget\n\n"
+        "История о том, как продукт вырос без единого доллара на маркетинг.\n\n"
+        "💡 Практический вывод: Запускайтесь на Twitter/X органически, до того как тратить деньги.\n\n"
+        "🔗 https://example.com/fallback-post"
+    )
+    # Substring assertion as additional safeguard
     assert "резервный источник" in text
 
 
