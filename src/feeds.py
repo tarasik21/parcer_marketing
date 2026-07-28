@@ -7,20 +7,10 @@
 # All URLs below were fetched and confirmed to return valid RSS/Atom XML
 # with recent (non-stale) entries as of 2026-07-28.
 
-# NOTE: Kyle Poyar's newsletter "Growth Unhinged" moved from Substack to
-# Beehiiv around January 2026. His old Substack feed
-# (kylepoyar.substack.com/feed) is dead. Extensive research (raw HTML head
-# inspection, sitemap.xml, robots.txt, wayback machine, full-page JSON
-# payload search, per-post pages) found NO public RSS feed currently
-# exposed on https://www.growthunhinged.com/ -- unlike other Beehiiv
-# publications (e.g. Marc Lou's newsletter below), Growth Unhinged does not
-# appear to have the "RSS on website" feature enabled. All standard paths
-# (/feed, /feed/, /rss, /rss.xml, /feed.xml, /atom.xml, /index.xml) 404.
-# Kyle Poyar is intentionally omitted from PRIMARY_SOURCES rather than
-# shipping a URL that isn't verified to work -- see task-2-report.md.
 PRIMARY_SOURCES = [
     {"name": "Arvid Kahl", "feed_url": "https://thebootstrappedfounder.com/feed"},
     {"name": "Jason Lemkin", "feed_url": "https://www.saastr.com/feed/"},
+    {"name": "Elena Verna", "feed_url": "https://www.elenaverna.com/feed"},
     {"name": "Emily Kramer & Kathleen Estreich", "feed_url": "https://newsletter.mkt1.co/feed"},
     {"name": "Lenny Rachitsky", "feed_url": "https://www.lennysnewsletter.com/feed"},
     {"name": "Rand Fishkin", "feed_url": "https://sparktoro.com/blog/feed"},
