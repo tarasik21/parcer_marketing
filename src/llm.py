@@ -2,7 +2,10 @@ import json
 from typing import Optional
 import requests
 
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+# "-latest" alias used deliberately: pinned versions (gemini-2.5-flash, gemini-2.0-flash, etc.)
+# returned 404/zero-quota for newly created API keys as of 2026-07-28; the alias tracks
+# whatever free-tier-eligible model Google currently points it to.
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
 
 PROMPT_TEMPLATE = """Ты — ассистент телеграм-канала о SaaS-маркетинге с минимальным бюджетом.
 
