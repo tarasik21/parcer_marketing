@@ -26,6 +26,11 @@ def test_send_message_long_text_splits_into_chunks():
     for call in mock_post.call_args_list:
         assert len(call.kwargs["json"]["text"]) <= MAX_MESSAGE_LENGTH
 
+    # Verify that chunks concatenate to reconstruct the original text
+    chunks = [call.kwargs["json"]["text"] for call in mock_post.call_args_list]
+    reconstructed = "".join(chunks)
+    assert reconstructed == long_text
+
 
 def test_send_message_api_error_raises():
     mock_resp = MagicMock()
