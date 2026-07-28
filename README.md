@@ -36,6 +36,21 @@ export TELEGRAM_CHAT_ID=...
 python -m src.main
 ```
 
+## Разовый вечнозелёный пост
+
+Перед первым запуском канала нужно **один раз вручную** опубликовать
+вечнозелёный пост (`content/evergreen_post.md`):
+
+```bash
+export TELEGRAM_BOT_TOKEN=...
+export TELEGRAM_CHAT_ID=...
+python scripts/send_evergreen.py
+```
+
+Это разовый шаг, выполняемый человеком **до включения** GitHub Actions
+workflow (расписания/cron). Скрипт не входит в автоматический пайплайн и
+не запускается workflow'ом — повторный запуск отправит пост ещё раз.
+
 ## Тесты
 
 ```bash

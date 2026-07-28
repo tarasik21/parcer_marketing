@@ -4,8 +4,10 @@
 # FALLBACK_SOURCES: bootstrapped-SaaS-founder feeds used when the primary
 # sources have nothing new to report (see Task 7's orchestrator).
 #
-# All URLs below were fetched and confirmed to return valid RSS/Atom XML
-# with recent (non-stale) entries as of 2026-07-28.
+# The URLs below are expected to return valid RSS/Atom XML. The fallback pool
+# and Elena Verna were fetched and verified on 2026-07-28; the remaining primary
+# URLs were provided as pre-verified and not re-fetched. Verify periodically —
+# src/fetch.py warns when a feed comes back malformed or unreachable.
 
 PRIMARY_SOURCES = [
     {"name": "Arvid Kahl", "feed_url": "https://thebootstrappedfounder.com/feed"},
