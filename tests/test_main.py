@@ -5,6 +5,7 @@ PRIMARY_SOURCES = [{"name": "Author A", "feed_url": "https://a.example/feed"}]
 FALLBACK_SOURCES = [{"name": "Fallback A", "feed_url": "https://fb.example/feed"}]
 
 PRIMARY_ENTRY = {"id": "p1", "source": "Author A", "title": "T1", "link": "https://a.example/1", "content": "C1"}
+PRIMARY_ENTRY_2 = {"id": "p2", "source": "Author A", "title": "T3", "link": "https://a.example/2", "content": "C3"}
 FALLBACK_ENTRY = {"id": "f1", "source": "Fallback A", "title": "T2", "link": "https://fb.example/1", "content": "C2"}
 
 LLM_RESULT = {"summary": "S", "takeaway": "K"}
@@ -64,3 +65,22 @@ def test_run_skips_already_seen_items(tmp_path):
 
     mock_llm.assert_not_called()
     mock_send.assert_not_called()
+
+
+def test_run_saves_state_when_llm_raises_mid_run(tmp_path):
+    state_path = str(tmp_path / "state.json")
+    with patch("src.main.fetch_all", side_effect=[[PRIMARY_ENTRY, PRIMARY_ENTRY_2]]), \
+         patch("src.main.summarize_and_filter", side_effect=[None, RuntimeError("boom")]), \
+         patch("src.main.send_message") as mock_send:
+        try:
+            run(state_path, PRIMARY_SOURCES, FALLBACK_SOURCES, "gk", "tt", "cc")
+            assert False, "expected run() to propagate the RuntimeError"
+        except RuntimeError:
+            pass
+
+    mock_send.assert_not_called()
+
+    from src.state import load_state, is_seen
+    state = load_state(state_path)
+    assert is_seen(state, "p1")
+    assert not is_seen(state, "p2")

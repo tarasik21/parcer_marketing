@@ -10,29 +10,30 @@ from src.digest import build_digest_message
 
 def run(state_path, primary_sources, fallback_sources, gemini_api_key, telegram_bot_token, telegram_chat_id):
     state = load_state(state_path)
-    digest_items = []
+    try:
+        digest_items = []
 
-    primary_entries = [e for e in fetch_all(primary_sources) if not is_seen(state, e["id"])]
-    for entry in primary_entries:
-        result = summarize_and_filter(entry["title"], entry["content"], entry["source"], gemini_api_key)
-        mark_seen(state, entry["id"])
-        if result:
-            digest_items.append({**entry, **result, "is_fallback": False})
-
-    if not digest_items:
-        fallback_entries = [e for e in fetch_all(fallback_sources) if not is_seen(state, e["id"])]
-        for entry in fallback_entries:
+        primary_entries = [e for e in fetch_all(primary_sources) if not is_seen(state, e["id"])]
+        for entry in primary_entries:
             result = summarize_and_filter(entry["title"], entry["content"], entry["source"], gemini_api_key)
             mark_seen(state, entry["id"])
             if result:
-                digest_items.append({**entry, **result, "is_fallback": True})
-                break
+                digest_items.append({**entry, **result, "is_fallback": False})
 
-    if digest_items:
-        message = build_digest_message(digest_items)
-        send_message(telegram_bot_token, telegram_chat_id, message)
+        if not digest_items:
+            fallback_entries = [e for e in fetch_all(fallback_sources) if not is_seen(state, e["id"])]
+            for entry in fallback_entries:
+                result = summarize_and_filter(entry["title"], entry["content"], entry["source"], gemini_api_key)
+                mark_seen(state, entry["id"])
+                if result:
+                    digest_items.append({**entry, **result, "is_fallback": True})
+                    break
 
-    save_state(state_path, state)
+        if digest_items:
+            message = build_digest_message(digest_items)
+            send_message(telegram_bot_token, telegram_chat_id, message)
+    finally:
+        save_state(state_path, state)
 
 
 if __name__ == "__main__":
