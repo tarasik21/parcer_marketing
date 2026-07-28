@@ -3,6 +3,11 @@ import feedparser
 
 def fetch_entries(feed_url: str, source_name: str) -> list[dict]:
     parsed = feedparser.parse(feed_url)
+    # feedparser does not raise on a dead URL, 404 or garbage payload — it
+    # returns normally with bozo=True and (usually) no entries. Surface that as
+    # a warning instead of letting a permanently dead feed look like "no news".
+    if parsed.get("bozo"):
+        print(f"WARNING: feed for {source_name} ({feed_url}) appears malformed or unreachable (bozo)")
     entries = []
     for entry in parsed.entries:
         item_id = entry.get("id") or entry.get("link")

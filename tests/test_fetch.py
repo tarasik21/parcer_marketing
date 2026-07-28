@@ -40,6 +40,21 @@ def test_fetch_entries_parses_items():
     }
 
 
+def test_fetch_entries_warns_but_does_not_crash_on_malformed_feed(capsys):
+    # feedparser does not raise on garbage input: it returns bozo=True with no entries.
+    parsed = feedparser.parse(BAD_RSS)
+    assert parsed.get("bozo")
+
+    with patch("src.fetch.feedparser.parse", return_value=parsed):
+        entries = fetch_entries("https://dead.example/feed", "Dead Author")
+
+    assert entries == []
+    out = capsys.readouterr().out
+    assert "WARNING" in out
+    assert "Dead Author" in out
+    assert "bozo" in out
+
+
 def test_fetch_all_skips_failing_source_and_keeps_others():
     good_parsed = feedparser.parse(SAMPLE_RSS)
 

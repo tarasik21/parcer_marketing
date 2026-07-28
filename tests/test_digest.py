@@ -50,6 +50,37 @@ def test_format_item_fallback_source_marks_it():
     assert "резервный источник" in text
 
 
+HTML_UNSAFE_ITEM = {
+    "source": "Emily Kramer & Kathleen Estreich",
+    "title": "From <$1k MRR> to growth",
+    "link": "https://example.com/post?a=1&b=2",
+    "summary": "Рост с <$1k MRR & без бюджета.",
+    "takeaway": "Пишите в открытую <every week> & измеряйте.",
+    "is_fallback": False,
+}
+
+
+def test_format_item_escapes_html_special_characters():
+    text = format_item(HTML_UNSAFE_ITEM)
+    assert text == (
+        "🔹 Emily Kramer &amp; Kathleen Estreich — From &lt;$1k MRR&gt; to growth\n\n"
+        "Рост с &lt;$1k MRR &amp; без бюджета.\n\n"
+        "💡 Практический вывод: Пишите в открытую &lt;every week&gt; &amp; измеряйте.\n\n"
+        "🔗 https://example.com/post?a=1&amp;b=2"
+    )
+    # No unescaped markup characters survive from the dynamic fields
+    assert "<" not in text
+    assert ">" not in text
+    assert "Kramer & Kathleen" not in text
+    # Our own static formatting is untouched
+    assert "🔹" in text and "💡" in text and "🔗" in text
+
+
+def test_format_item_escapes_fallback_item_without_touching_marker():
+    text = format_item({**HTML_UNSAFE_ITEM, "is_fallback": True})
+    assert text.startswith("🔹 Emily Kramer &amp; Kathleen Estreich (резервный источник) — ")
+
+
 def test_build_digest_message_joins_multiple_items():
     message = build_digest_message([PRIMARY_ITEM, FALLBACK_ITEM])
     assert "Arvid Kahl" in message
